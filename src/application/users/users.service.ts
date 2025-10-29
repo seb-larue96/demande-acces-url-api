@@ -36,8 +36,9 @@ export class UsersService {
     return mapToFindUserDto(user);
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll(): Promise<FindUserDto[]> {
+    const users = await this.userRepository.findAll();
+    return users.map(user => mapToFindUserDto(user));
   }
 
   async findOneById(id: number): Promise<FindUserDto> {
