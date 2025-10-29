@@ -27,8 +27,8 @@ export class User {
     @Property({ onCreate: () => new Date() })
     createdAt: Date = new Date();
 
-    @Property({ onUpdate: () => new Date() })
-    updatedAt: Date = new Date();
+    @Property({ onUpdate: () => new Date(), nullable: true })
+    updatedAt?: Date = new Date();
 
     @BeforeCreate()
     async hashPassword() {
