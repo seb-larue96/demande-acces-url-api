@@ -2,12 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
+  @Post('createUser')
+  @ApiOperation({ summary: 'Create a new user' })
+  @ApiResponse({ status: 201, description: 'The user has been successfully created.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -17,9 +21,13 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get('getUserById:id')
+  @ApiOperation({ summary: 'Get user by id' })
+  @ApiParam({ name: 'id', type: Number, description: 'The id of the user to retrieve.' })
+  @ApiResponse({ status: 200, description: 'The user has been successfully retrieved.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  findOneById(@Param('id') id: number) {
+    return this.usersService.findOneById(id);
   }
 
   @Patch(':id')
