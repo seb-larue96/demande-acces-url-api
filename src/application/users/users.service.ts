@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { User } from './entities/user.entity';
 import { EntityManager, EntityRepository } from '@mikro-orm/mysql';
-import { FindUserDto } from './dto/find-user.dto';
+import { UserResponseDto } from './dto/user-response.dto';
 import { mapToFindUserDto } from './mapping/user.mapper';
 import * as bcrypt from 'bcrypt';
 
@@ -17,7 +17,7 @@ export class UsersService {
     private readonly em: EntityManager,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<FindUserDto> {
+  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const { email } = createUserDto;
 
     const existingUser = await this.userRepository.findOne({ email });
@@ -37,12 +37,12 @@ export class UsersService {
     return mapToFindUserDto(user);
   }
 
-  async findAll(): Promise<FindUserDto[]> {
+  async findAll(): Promise<UserResponseDto[]> {
     const users = await this.userRepository.findAll();
     return users.map(user => mapToFindUserDto(user));
   }
 
-  async findOneById(id: number): Promise<FindUserDto> {
+  async findOneById(id: number): Promise<UserResponseDto> {
     const user = await this.userRepository.findOne({ id });
 
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
@@ -50,7 +50,7 @@ export class UsersService {
     return mapToFindUserDto(user);
   }
 
-  async findOneByEmail(email: string): Promise<FindUserDto> {
+  async findOneByEmail(email: string): Promise<UserResponseDto> {
     const user = await this.userRepository.findOne({ email });
 
     if (!user) throw new NotFoundException(`User with email ${email} not found`);
@@ -66,8 +66,13 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
-  async isPasswordValid(email: string, password: string): Promise<boolean> {
+  async validateUser(email: string, password: string): Promise<UserResponseDto> {
     const user = await this.userRepository.findOne({ email });
-    return user ? await bcrypt.compare(password, user.password) : false;
+    if (!user) throw new BadRequestException('User not found');
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new BadRequestException('Password does not match');
+
+    return mapToFindUserDto(user);
   }
 }
