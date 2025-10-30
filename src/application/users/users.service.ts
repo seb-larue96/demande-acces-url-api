@@ -23,7 +23,7 @@ export class UsersService {
     const existingUser = await this.userRepository.findOne({ email });
     if (existingUser) throw new BadRequestException(`User with email ${email} already exists`);
 
-    const user = this.em.create(User, {
+    const newUser = this.em.create(User, {
       name: createUserDto.name,
       surname: createUserDto.surname,
       email: createUserDto.email,
@@ -33,8 +33,8 @@ export class UsersService {
       createdAt: new Date()
     });
 
-    await this.em.persistAndFlush(user);
-    return mapToFindUserDto(user);
+    await this.em.persistAndFlush(newUser);
+    return mapToFindUserDto(newUser);
   }
 
   async findAll(): Promise<UserResponseDto[]> {
@@ -74,5 +74,10 @@ export class UsersService {
     if (!isMatch) throw new BadRequestException('Password does not match');
 
     return mapToFindUserDto(user);
+  }
+
+  async validateEmail(email: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({ email });
+    return !!user;
   }
 }
