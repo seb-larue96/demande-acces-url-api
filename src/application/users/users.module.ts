@@ -9,5 +9,6 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
   ],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}
