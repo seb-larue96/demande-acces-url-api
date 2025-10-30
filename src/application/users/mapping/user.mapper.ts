@@ -1,7 +1,7 @@
-import { FindUserDto } from "../dto/find-user.dto";
+import { UserResponseDto } from "../dto/user-response.dto";
 import { User } from "../entities/user.entity";
 
-export function mapToFindUserDto(user: User): FindUserDto {
+export function mapToFindUserDto(user: User): UserResponseDto {
     return {
         id: user.id,
         name: user.name,
