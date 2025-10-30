@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { SignInDto } from './dto/sign-in.dto';
 import { UserResponseDto } from '../users/dto/user-response.dto';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
@@ -8,11 +7,11 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
     ) {}
 
-    async signIn(signInDto: SignInDto): Promise<UserResponseDto> {
-        return this.usersService.validateUser(signInDto.email, signInDto.password);
+    async signIn(user: UserResponseDto): Promise<UserResponseDto> {
+        return user;
     }
 
     async register(registerDto: RegisterDto): Promise<UserResponseDto> {

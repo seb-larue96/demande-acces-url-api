@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { SignInDto } from './dto/sign-in.dto';
 import { RegisterDto } from './dto/register.dto';
 
@@ -9,11 +10,13 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post('login')
+    @UseGuards(LocalAuthGuard)
+    @ApiBody({ type: SignInDto })
     @ApiOperation({ summary: 'User login' })
     @ApiResponse({ status: 200, description: 'The user has been successfully logged in.' })
     @ApiResponse({ status: 400, description: 'Bad Request.' })
-    login(@Body() signInDto: SignInDto) {
-        return this.authService.signIn(signInDto);
+    async login(@Request() req) {
+        return this.authService.signIn(req.user);
     }
 
     @Post('register')
