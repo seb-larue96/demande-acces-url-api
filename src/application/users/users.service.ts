@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { EntityManager, EntityRepository } from '@mikro-orm/mysql';
 import { FindUserDto } from './dto/find-user.dto';
 import { mapToFindUserDto } from './mapping/user.mapper';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -57,11 +58,16 @@ export class UsersService {
     return mapToFindUserDto(user);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async isPasswordValid(email: string, password: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({ email });
+    return user ? await bcrypt.compare(password, user.password) : false;
   }
 }
