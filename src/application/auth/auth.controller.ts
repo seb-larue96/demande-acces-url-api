@@ -4,11 +4,13 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { SignInDto } from './dto/sign-in.dto';
 import { RegisterDto } from './dto/register.dto';
+import { Public } from '../../decorator/public.decorator';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
+    @Public()
     @Post('login')
     @UseGuards(LocalAuthGuard)
     @ApiBody({ type: SignInDto })
@@ -19,6 +21,7 @@ export class AuthController {
         return this.authService.signIn(req.user);
     }
 
+    @Public()
     @Post('register')
     @ApiOperation({ summary: 'User registration' })
     @ApiResponse({ status: 201, description: 'The user has been successfully registered.' })

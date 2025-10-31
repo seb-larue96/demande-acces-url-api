@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,14 +12,14 @@ export class UsersController {
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({ status: 201, description: 'The user has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
-  create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @Get('getUsers')
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({ status: 200, description: 'List of all users.' })
-  findAll() {
+  async findAll() {
     return this.usersService.findAll();
   }
 
@@ -28,7 +28,7 @@ export class UsersController {
   @ApiParam({ name: 'id', type: Number, description: 'The id of the user to retrieve.' })
   @ApiResponse({ status: 200, description: 'The user has been successfully retrieved.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  findOneById(@Param('id') id: number) {
+  async findOneById(@Param('id') id: number) {
     return this.usersService.findOneById(id);
   }
 

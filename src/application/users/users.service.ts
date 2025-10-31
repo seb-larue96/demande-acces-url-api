@@ -76,8 +76,14 @@ export class UsersService {
     return mapToFindUserDto(user);
   }
 
+  async validateUserById(id: number): Promise<boolean> {
+    const user = await this.userRepository.findOne({ id });
+    return !!user;
+  }
+
   async validateEmail(email: string): Promise<boolean> {
     const user = await this.userRepository.findOne({ email });
     return !!user;
   }
+
 }
