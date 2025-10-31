@@ -81,7 +81,7 @@ export class UsersService {
     return !!user;
   }
 
-  async validateEmail(email: string): Promise<boolean> {
+  async validateUserByEmail(email: string): Promise<boolean> {
     const user = await this.userRepository.findOne({ email });
     return !!user;
   }
