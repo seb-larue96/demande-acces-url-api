@@ -46,8 +46,12 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Delete('removeUser:id')
+  @ApiOperation({ summary: 'Remove user by id' })
+  @ApiResponse({ status: 200, description: 'The user has been successfully removed.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  async remove(@Param('id') id: number) {
+    return this.usersService.remove(id);
   }
 }

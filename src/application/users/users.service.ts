@@ -38,12 +38,12 @@ export class UsersService {
   }
 
   async findAll(): Promise<UserResponseDto[]> {
-    const users = await this.userRepository.findAll();
+    const users = await this.userRepository.find({ status: { $ne: 'D' } });
     return users.map(user => mapToFindUserDto(user));
   }
 
   async findOneById(id: number): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({ id });
+    const user = await this.userRepository.findOne({ id, status: { $ne: 'D' } });
 
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
 
@@ -51,7 +51,7 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({ email });
+    const user = await this.userRepository.findOne({ email, status: { $ne: 'D' } });
 
     if (!user) throw new NotFoundException(`User with email ${email} not found`);
 
@@ -59,7 +59,7 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({ id });
+    const user = await this.userRepository.findOne({ id, status: { $ne: 'D' } });
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
 
     this.em.assign(user, updateUserDto, { mergeObjectProperties: true });
@@ -70,11 +70,16 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    return `This action removes a #${id} user`;
+    const user = await this.userRepository.findOne({ id, status: { $ne: 'D' } });
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
+
+    this.em.assign(user, { status: 'D' });
+
+    await this.em.flush();
   }
 
   async validateUser(email: string, password: string): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({ email });
+    const user = await this.userRepository.findOne({ email, status: { $ne: 'D' } });
     if (!user) throw new BadRequestException('User not found');
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -84,12 +89,12 @@ export class UsersService {
   }
 
   async validateUserById(id: number): Promise<boolean> {
-    const user = await this.userRepository.findOne({ id });
+    const user = await this.userRepository.findOne({ id, status: { $ne: 'D' } });
     return !!user;
   }
 
   async validateUserByEmail(email: string): Promise<boolean> {
-    const user = await this.userRepository.findOne({ email });
+    const user = await this.userRepository.findOne({ email, status: { $ne: 'D' } });
     return !!user;
   }
 
