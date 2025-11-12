@@ -1,18 +1,18 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
 import { SignInDto } from './dto/sign-in.dto';
 import { RegisterDto } from './dto/register.dto';
-import { Public } from '../../decorator/public.decorator';
+import { Public } from '../../decorators/public.decorator';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Public()
-    @Post('login')
     @UseGuards(LocalAuthGuard)
+    @Post('login')
     @ApiBody({ type: SignInDto })
     @ApiOperation({ summary: 'User login' })
     @ApiResponse({ status: 200, description: 'The user has been successfully logged in.' })
