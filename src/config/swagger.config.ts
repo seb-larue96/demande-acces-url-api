@@ -6,6 +6,13 @@ export function configureSwagger(app: INestApplication) {
         .setTitle("DSI - Demande Accès URL")
         .setDescription("DSI - Demande Accès URL - API")
         .setVersion("1.0")
+        .addBearerAuth(
+            {
+                type: "http",
+                scheme: "bearer",
+                bearerFormat: "JWT",
+            }
+        )
         .build();
 
     const document = SwaggerModule.createDocument(app, config);
