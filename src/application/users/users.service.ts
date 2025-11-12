@@ -58,8 +58,15 @@ export class UsersService {
     return mapToFindUserDto(user);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
+    const user = await this.userRepository.findOne({ id });
+    if (!user) throw new NotFoundException(`User with id ${id} not found`);
+
+    this.em.assign(user, updateUserDto, { mergeObjectProperties: true });
+    user.status = 'M';
+
+    await this.em.flush();
+    return mapToFindUserDto(user);
   }
 
   async remove(id: number) {
