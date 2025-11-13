@@ -7,9 +7,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "migration:create": "npm run build && npx mikro-orm migration:create",
-    "migration:up": "npx mikro-orm migration:up",
-    "migration:down": "npx mikro-orm migration:down",
+    "migration:create": "npm run build && npx mikro-orm migration:create --config ./mikro-orm.cli.config.ts",
+    "migration:up": "npx mikro-orm migration:up --config ./mikro-orm.cli.config.ts",
+    "migration:down": "npx mikro-orm migration:down --config ./mikro-orm.cli.config.ts",
     "seeder:run": "npx mikro-orm seeder:run --config ./mikro-orm.cli.config.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
