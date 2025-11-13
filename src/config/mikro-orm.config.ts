@@ -5,7 +5,8 @@ import { MySqlDriver } from '@mikro-orm/mysql';
 dotenv.config();
 
 const config: MikroOrmModuleOptions = {
-    entities: [__dirname + '/../**/entities/*.entity{.ts,.js}'],
+    entities: ['./dist/**/*.entity.js'],
+    entitiesTs: ['./src/**/*.entity.ts'],
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),
     user: process.env.DB_USER,
