@@ -1,8 +1,6 @@
 import * as dotenv from 'dotenv';
 import { MikroOrmModuleOptions } from "@mikro-orm/nestjs";
 import { MySqlDriver } from '@mikro-orm/mysql';
-import { User } from 'src/application/users/entities/user.entity';
-import { AccessRequestStatus } from 'src/application/references/access-request-status/entities/access-request-status.entity';
 
 dotenv.config();
 
@@ -24,7 +22,8 @@ const config: MikroOrmModuleOptions = {
         path: process.env.NODE_ENV === 'production' ? './dist/database/seeders' : './src/database/seeders',
         pathTs: './src/database/seeders',
         defaultSeeder: 'DatabaseSeeder',
-    }
+        emit: 'ts',
+    },
 };
 
 export default config;

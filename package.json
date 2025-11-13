@@ -10,6 +10,7 @@
     "migration:create": "npm run build && npx mikro-orm migration:create",
     "migration:up": "npx mikro-orm migration:up",
     "migration:down": "npx mikro-orm migration:down",
+    "seeder:run": "npx mikro-orm seeder:run --config ./mikro-orm.cli.config.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
