@@ -1,26 +1,28 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAccessRequestStatusDto } from './dto/create-access-request-status.dto';
-import { UpdateAccessRequestStatusDto } from './dto/update-access-request-status.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityRepository } from '@mikro-orm/mysql';
+import { AccessRequestStatus } from './entities/access-request-status.entity';
+import { AccessRequestStatusResponseDto } from './dto/access-request-status-response.dto';
+import { mapToAccessRequestStatusResponseDto } from './mapping/access-request-status.mapper';
 
 @Injectable()
 export class AccessRequestStatusService {
-  create(createAccessRequestStatusDto: CreateAccessRequestStatusDto) {
-    return 'This action adds a new accessRequestStatus';
+
+  constructor(
+  @InjectRepository(AccessRequestStatus)
+  private readonly accessRequestStatusRepository: EntityRepository<AccessRequestStatus>,
+  ) {}
+
+  async findAll(): Promise<AccessRequestStatusResponseDto[]> {
+    const accessRequestStatuses = await this.accessRequestStatusRepository.find({ status: { $ne: 'D' } });
+    return accessRequestStatuses.map(accessRequestStatus => mapToAccessRequestStatusResponseDto(accessRequestStatus));
   }
 
-  findAll() {
-    return `This action returns all accessRequestStatus`;
-  }
+  async findOne(id: number): Promise<AccessRequestStatusResponseDto> {
+    const accessRequestStatus = await this.accessRequestStatusRepository.findOne({ id, status: { $ne: 'D' } });
 
-  findOne(id: number) {
-    return `This action returns a #${id} accessRequestStatus`;
-  }
+    if (!accessRequestStatus) throw new NotFoundException(`AccessRequestStatus with id ${id} not found`);
 
-  update(id: number, updateAccessRequestStatusDto: UpdateAccessRequestStatusDto) {
-    return `This action updates a #${id} accessRequestStatus`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} accessRequestStatus`;
+    return mapToAccessRequestStatusResponseDto(accessRequestStatus);
   }
 }

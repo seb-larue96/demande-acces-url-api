@@ -1,34 +1,27 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { AccessRequestStatusService } from './access-request-status.service';
-import { CreateAccessRequestStatusDto } from './dto/create-access-request-status.dto';
-import { UpdateAccessRequestStatusDto } from './dto/update-access-request-status.dto';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+@ApiTags('access-request-statuses')
+@ApiBearerAuth()
 @Controller('access-request-status')
 export class AccessRequestStatusController {
   constructor(private readonly accessRequestStatusService: AccessRequestStatusService) {}
 
-  @Post()
-  create(@Body() createAccessRequestStatusDto: CreateAccessRequestStatusDto) {
-    return this.accessRequestStatusService.create(createAccessRequestStatusDto);
-  }
-
-  @Get()
-  findAll() {
+  @Get('getAccessRequestStatuses')
+  @ApiOperation({ summary: 'Get all access request statuses' })
+  @ApiResponse({ status: 200, description: 'List of all access request statuses.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  async findAll() {
     return this.accessRequestStatusService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accessRequestStatusService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccessRequestStatusDto: UpdateAccessRequestStatusDto) {
-    return this.accessRequestStatusService.update(+id, updateAccessRequestStatusDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.accessRequestStatusService.remove(+id);
+  @Get('getAccessRequestStatusById:id')
+  @ApiOperation({ summary: 'Get access request status by id' })
+  @ApiResponse({ status: 200, description: 'The access request status has been successfully retrieved.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'Access request status not found.' })
+  async findOne(@Param('id') id: number) {
+    return this.accessRequestStatusService.findOne(id);
   }
 }
