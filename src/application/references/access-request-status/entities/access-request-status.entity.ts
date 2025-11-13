@@ -1,5 +1,6 @@
-import { PrimaryKey, Property } from "@mikro-orm/core";
+import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 
+@Entity()
 export class AccessRequestStatus {
     @PrimaryKey()
     id: number;
