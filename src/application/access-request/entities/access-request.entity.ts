@@ -1,6 +1,6 @@
 import { Entity, ManyToOne, PrimaryKey, Property, Unique } from "@mikro-orm/core";
-import { AccessRequestStatus } from "src/application/references/access-request-status/entities/access-request-status.entity";
-import { User } from "src/application/users/entities/user.entity";
+import { User } from "../../users/entities/user.entity";
+import { AccessRequestStatus } from "../../references/access-request-status/entities/access-request-status.entity";
 
 @Entity()
 export class AccessRequest {
@@ -11,6 +11,9 @@ export class AccessRequest {
     @Unique()
     requestNumber: string;
 
+    @Property()
+    Url: string;
+
     @ManyToOne(() => User)
     requester: User;
 
@@ -18,7 +21,7 @@ export class AccessRequest {
     reasonToRequest: string;
 
     @Property({ nullable: true })
-    reasontToReject: string;
+    reasonToReject?: string;
 
     @ManyToOne(() => AccessRequestStatus)
     requestStatus: AccessRequestStatus;
