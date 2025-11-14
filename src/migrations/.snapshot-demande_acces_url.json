@@ -224,8 +224,8 @@
           "length": 255,
           "mappedType": "string"
         },
-        "reasont_to_reject": {
-          "name": "reasont_to_reject",
+        "reason_to_reject": {
+          "name": "reason_to_reject",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
