@@ -1,15 +1,24 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccessRequestService } from './access-request.service';
 import { CreateAccessRequestDto } from './dto/create-access-request.dto';
 import { UpdateAccessRequestDto } from './dto/update-access-request.dto';
+import { User as UserEntity } from '../users/entities/user.entity';
+import { User } from 'src/decorators/user.decorator';
 
+@ApiTags('access-request')
+@ApiBearerAuth()
 @Controller('access-request')
 export class AccessRequestController {
   constructor(private readonly accessRequestService: AccessRequestService) {}
 
-  @Post()
-  create(@Body() createAccessRequestDto: CreateAccessRequestDto) {
-    return this.accessRequestService.create(createAccessRequestDto);
+  @Post('createAccessRequest')
+  @ApiOperation({ summary: 'Create a new access request' })
+  @ApiResponse({ status: 201, description: 'The access request has been successfully created.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  create(@User() user: UserEntity, @Body() createAccessRequestDto: CreateAccessRequestDto) {
+    return this.accessRequestService.create(user, createAccessRequestDto);
   }
 
   @Get()
@@ -17,9 +26,14 @@ export class AccessRequestController {
     return this.accessRequestService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accessRequestService.findOne(+id);
+  @Get('getAccessRequestById:id')
+  @ApiOperation({ summary: 'Get user by id' })
+  @ApiParam({ name: 'id', type: Number, description: 'The id of the access request to retrieve.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 200, description: 'The access request has been successfully retrieved.' })
+  @ApiResponse({ status: 404, description: 'Access request not found.' })
+  findOne(@Param('id') id: number) {
+    return this.accessRequestService.findOne(id);
   }
 
   @Patch(':id')
