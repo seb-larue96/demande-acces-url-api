@@ -88,14 +88,14 @@ export class UsersService {
     return mapToFindUserDto(user);
   }
 
-  async validateUserById(id: number): Promise<boolean> {
-    const user = await this.userRepository.findOne({ id, status: { $ne: 'D' } });
-    return !!user;
+  async validateUserById(id: number): Promise<UserResponseDto> {
+    const user = await this.findOneById(id);
+    return user;
   }
 
-  async validateUserByEmail(email: string): Promise<boolean> {
-    const user = await this.userRepository.findOne({ email, status: { $ne: 'D' } });
-    return !!user;
+  async validateUserByEmail(email: string): Promise<UserResponseDto> {
+    const user = await this.findOneByEmail(email);
+    return user;
   }
 
 }
