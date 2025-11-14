@@ -8,13 +8,16 @@ export class AccessRequestResponseDto {
     readonly requestNumber: string;
 
     @ApiProperty()
+    readonly url: string;
+
+    @ApiProperty()
     readonly requester: string;
 
     @ApiProperty()
     readonly reasonToRequest: string;
 
     @ApiProperty()
-    readonly reasonToReject: string;
+    readonly reasonToReject?: string;
 
     @ApiProperty()
     readonly requestStatus: string;
