@@ -39,6 +39,7 @@ export class UsersController {
 
   @Patch('updateUser:id')
   @ApiOperation({ summary: 'Update existing user by id' })
+  @ApiParam({ name: 'id', type: Number, description: 'The id of the user to update.' })
   @ApiResponse({ status: 200, description: 'The user has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
@@ -48,6 +49,7 @@ export class UsersController {
 
   @Delete('removeUser:id')
   @ApiOperation({ summary: 'Remove user by id' })
+  @ApiParam({ name: 'id', type: Number, description: 'The id of the user to remove.' })
   @ApiResponse({ status: 200, description: 'The user has been successfully removed.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'User not found.' })

@@ -40,8 +40,9 @@ export class AccessRequestService {
     return mapToAccessRequestResponseDto(accessRequest);
   }
 
-  findAll() {
-    return `This action returns all accessRequest`;
+  async findAll() {
+    const acccesRequests = await this.accessRequestRepository.find({ status: { $ne: 'D' } })
+    return acccesRequests.map(accessRequest => mapToAccessRequestResponseDto(accessRequest));
   }
 
   async findOne(id: number) {
