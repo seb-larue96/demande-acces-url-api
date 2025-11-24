@@ -1,12 +1,11 @@
 import { Body, Controller, Post, Request, Req, Res, UseGuards, Get } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Public } from '../../decorators/public.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { JwtAuthGuard } from './guards/jwt.guard';
 
 @ApiTags('auth')
 @Controller('auth')
