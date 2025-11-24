@@ -1,11 +1,12 @@
-import { Body, Controller, Post, Request, Res, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, Request, Req, Res, UseGuards, Get } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Public } from '../../decorators/public.decorator';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { JwtAuthGuard } from './guards/jwt.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -40,5 +41,12 @@ export class AuthController {
     @ApiResponse({ status: 400, description: 'Bad Request.' })
     register(@Body() registerDto: RegisterDto) {
         return this.authService.register(registerDto);
+    }
+
+    @Get('me')
+    @ApiOperation({ summary: 'Get authenticated user info' })
+    @ApiResponse({ status: 200, description: 'Returns the authenticated user.' })
+    getMe(@Req() req) {
+        return req.user;
     }
 }

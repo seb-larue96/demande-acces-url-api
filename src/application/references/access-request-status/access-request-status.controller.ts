@@ -1,9 +1,8 @@
 import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AccessRequestStatusService } from './access-request-status.service';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('access-request-statuses')
-@ApiBearerAuth()
 @Controller('access-request-status')
 export class AccessRequestStatusController {
   constructor(private readonly accessRequestStatusService: AccessRequestStatusService) {}
