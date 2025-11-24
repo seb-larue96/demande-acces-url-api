@@ -1,5 +1,6 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -18,8 +19,18 @@ export class AuthController {
     @ApiOperation({ summary: 'User login' })
     @ApiResponse({ status: 200, description: 'The user has been successfully logged in.' })
     @ApiResponse({ status: 400, description: 'Bad Request.' })
-    async login(@Request() req) {
-        return this.authService.signIn(req.user);
+    async login(@Request() req, @Res({ passthrough: true }) res: Response) {
+        const access_token = await this.authService.signIn(req.user);
+
+        res.cookie('access_token', access_token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            path: '/',
+            maxAge: 1000 * 3600
+        });
+
+        return access_token;
     }
 
     @Public()
