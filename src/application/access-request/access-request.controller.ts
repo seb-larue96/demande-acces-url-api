@@ -28,6 +28,15 @@ export class AccessRequestController {
     return this.accessRequestService.findAll();
   }
 
+  @Get('getAccessRequestsByUserId:userId')
+  @ApiOperation({ summary: 'Get all access requests by requester id' })
+  @ApiParam({ name: 'userId', type: Number, description: 'The id of the user whose access requests are to be retrieved' })
+  @ApiResponse({ status: 200, description: 'List of all access requests for a user' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  findAllByUserId(@Param('userId') userId: number) {
+    return this.accessRequestService.findAllByUserId(userId);
+  }
+
   @Get('getAccessRequestById:id')
   @ApiOperation({ summary: 'Get access request by id' })
   @ApiParam({ name: 'id', type: Number, description: 'The id of the access request to retrieve.' })
