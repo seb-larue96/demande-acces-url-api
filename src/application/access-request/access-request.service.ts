@@ -45,8 +45,8 @@ export class AccessRequestService {
     return acccesRequests.map(accessRequest => mapToAccessRequestResponseDto(accessRequest));
   }
 
-  async findAllByUserId(userId: number) {
-    const accessRequests = await this.accessRequestRepository.find({ requester: userId, status: { $ne: 'D' } });
+  async findAllByUser(user: User) {
+    const accessRequests = await this.accessRequestRepository.find({ requester: user, status: { $ne: 'D' } });
     return accessRequests.map(accessRequest => mapToAccessRequestResponseDto(accessRequest));
   }
 
