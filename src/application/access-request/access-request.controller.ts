@@ -36,7 +36,7 @@ export class AccessRequestController {
     return this.accessRequestService.findAllByUser(user);
   }
 
-  @Get('getAccessRequestById:id')
+  @Get('getAccessRequestById/:id')
   @ApiOperation({ summary: 'Get access request by id' })
   @ApiParam({ name: 'id', type: Number, description: 'The id of the access request to retrieve.' })
   @ApiResponse({ status: 200, description: 'The access request has been successfully retrieved.' })

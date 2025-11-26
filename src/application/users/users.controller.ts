@@ -26,7 +26,7 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get('getUserById:id')
+  @Get('getUserById/:id')
   @ApiOperation({ summary: 'Get user by id' })
   @ApiParam({ name: 'id', type: Number, description: 'The id of the user to retrieve.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -36,7 +36,7 @@ export class UsersController {
     return this.usersService.findOneById(id);
   }
 
-  @Patch('updateUser:id')
+  @Patch('updateUser/:id')
   @ApiOperation({ summary: 'Update existing user by id' })
   @ApiParam({ name: 'id', type: Number, description: 'The id of the user to update.' })
   @ApiResponse({ status: 200, description: 'The user has been successfully updated.' })
@@ -46,7 +46,7 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @Delete('removeUser:id')
+  @Delete('removeUser/:id')
   @ApiOperation({ summary: 'Remove user by id' })
   @ApiParam({ name: 'id', type: Number, description: 'The id of the user to remove.' })
   @ApiResponse({ status: 200, description: 'The user has been successfully removed.' })
