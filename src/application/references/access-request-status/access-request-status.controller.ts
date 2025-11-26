@@ -15,7 +15,7 @@ export class AccessRequestStatusController {
     return this.accessRequestStatusService.findAll();
   }
 
-  @Get('getAccessRequestStatusById:id')
+  @Get('getAccessRequestStatusById/:id')
   @ApiOperation({ summary: 'Get access request status by id' })
   @ApiResponse({ status: 200, description: 'The access request status has been successfully retrieved.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
