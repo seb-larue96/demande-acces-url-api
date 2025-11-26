@@ -41,17 +41,26 @@ export class AccessRequestService {
   }
 
   async findAll() {
-    const acccesRequests = await this.accessRequestRepository.find({ status: { $ne: 'D' } });
+    const acccesRequests = await this.accessRequestRepository.find(
+      { status: { $ne: 'D' } },
+      { populate: ['requestStatus'] }
+    );
     return acccesRequests.map(accessRequest => mapToAccessRequestResponseDto(accessRequest));
   }
 
   async findAllByUser(user: User) {
-    const accessRequests = await this.accessRequestRepository.find({ requester: user, status: { $ne: 'D' } });
+    const accessRequests = await this.accessRequestRepository.find(
+      { requester: user, status: { $ne: 'D' } },
+      { populate: ['requestStatus'] }
+    );
     return accessRequests.map(accessRequest => mapToAccessRequestResponseDto(accessRequest));
   }
 
   async findOne(id: number) {
-    const accessRequest = await this.accessRequestRepository.findOne({ id, status: { $ne: 'D' } });
+    const accessRequest = await this.accessRequestRepository.findOne(
+      { id, status: { $ne: 'D' } },
+      { populate: ['requestStatus'] }
+    );
 
     if(!accessRequest) throw new NotFoundException(`Access request with id ${id} not found`);
 
