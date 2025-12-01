@@ -18,6 +18,10 @@ export class AuthService {
         return access_token;
     }
 
+    async logout() {
+        return { message: 'Logged out successfully' };
+    }
+
     async register(registerDto: RegisterDto): Promise<UserResponseDto> {
         const existingMail = await this.usersService.validateUserByEmail(registerDto.email);
         if (existingMail) throw new BadRequestException('Email already in use');

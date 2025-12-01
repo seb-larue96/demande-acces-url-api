@@ -33,6 +33,20 @@ export class AuthController {
         return access_token;
     }
 
+    @Post('logout')
+    @ApiOperation({ summary: 'Logout user' })
+    @ApiResponse({ status: 200, description: 'The user has been logged out' })
+    async logout(@Res({ passthrough: true }) res: Response) {
+        res.clearCookie('access_token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            path: '/'
+        });
+
+        return this.authService.logout();
+    }
+
     @Public()
     @Post('register')
     @ApiOperation({ summary: 'User registration' })
