@@ -1,5 +1,6 @@
-import { BeforeCreate, Entity, PrimaryKey, Property } from "@mikro-orm/core";
+import { BeforeCreate, Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
 import * as bcrypt from 'bcrypt';
+import { Role } from "src/application/roles/entities/role.entity";
 
 @Entity()
 export class User {
@@ -17,6 +18,9 @@ export class User {
 
     @Property({ hidden: true })
     password: string;
+
+    @ManyToOne(() => Role)
+    role: Role;
 
     @Property()
     status: string;
