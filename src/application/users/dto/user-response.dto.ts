@@ -14,5 +14,8 @@ export class UserResponseDto {
     readonly email: string;
 
     @ApiProperty()
+    readonly role: string;
+
+    @ApiProperty()
     readonly isActive: boolean;
 }

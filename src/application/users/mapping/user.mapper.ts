@@ -7,6 +7,7 @@ export function mapToFindUserDto(user: User): UserResponseDto {
         name: user.name,
         surname: user.surname,
         email: user.email,
+        role: user.role.name,
         isActive: user.isActive,
     }
 }
