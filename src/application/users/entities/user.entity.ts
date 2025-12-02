@@ -13,7 +13,7 @@ export class User {
     @Property()
     surname: string;
 
-    @Property({ unique: true })
+    @Property()
     email: string;
 
     @Property({ hidden: true })

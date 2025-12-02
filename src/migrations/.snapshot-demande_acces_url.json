@@ -219,16 +219,6 @@
       "indexes": [
         {
           "columnNames": [
-            "email"
-          ],
-          "composite": false,
-          "keyName": "user_email_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
             "role_id"
           ],
           "composite": false,
