@@ -1,6 +1,6 @@
 import { BeforeCreate, Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
 import * as bcrypt from 'bcrypt';
-import { Role } from "src/application/roles/entities/role.entity";
+import { Role } from "../../roles/entities/role.entity";
 
 @Entity()
 export class User {
