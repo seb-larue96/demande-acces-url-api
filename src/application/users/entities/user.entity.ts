@@ -33,10 +33,4 @@ export class User {
 
     @Property({ onUpdate: () => new Date(), nullable: true })
     updatedAt?: Date = new Date();
-
-    @BeforeCreate()
-    async hashPassword() {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-    }
 }

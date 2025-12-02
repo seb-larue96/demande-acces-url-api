@@ -19,18 +19,19 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
-    const { email, roleId } = createUserDto;
+    const { email, password, roleId } = createUserDto;
 
     const existingUser = await this.userRepository.findOne({ email, status: { $ne: 'D' } });
     if (existingUser) throw new BadRequestException(`User with email ${email} already exists`);
 
+    const hashedPassword = await bcrypt.hash(password, 10);
     const role = await this.resolveRole(roleId);
 
     const newUser = this.em.create(User, {
       name: createUserDto.name,
       surname: createUserDto.surname,
       email: createUserDto.email,
-      password: createUserDto.password,
+      password: hashedPassword,
       role: role,
       status: 'I',
       isActive: true,
@@ -42,12 +43,18 @@ export class UsersService {
   }
 
   async findAll(): Promise<UserResponseDto[]> {
-    const users = await this.userRepository.find({ status: { $ne: 'D' } });
+    const users = await this.userRepository.find(
+      { status: { $ne: 'D' } },
+      { populate: ['role'] }
+    );
     return users.map(user => mapToFindUserDto(user));
   }
 
   async findOneById(id: number): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({ id, status: { $ne: 'D' } });
+    const user = await this.userRepository.findOne(
+      { id, status: { $ne: 'D' } },
+      { populate: ['role'] }
+    );
 
     if (!user) throw new NotFoundException(`User with id ${id} not found`);
 
@@ -55,7 +62,10 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({ email, status: { $ne: 'D' } });
+    const user = await this.userRepository.findOne(
+      { email, status: { $ne: 'D' } },
+      { populate: ['role'] }
+    );
 
     if (!user) throw new NotFoundException(`User with email ${email} not found`);
 
@@ -83,7 +93,10 @@ export class UsersService {
   }
 
   async validateUser(email: string, password: string): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({ email, status: { $ne: 'D' } });
+    const user = await this.userRepository.findOne(
+      { email, status: { $ne: 'D' } },
+      { populate: ['role'] }
+    );
     if (!user) throw new BadRequestException('User not found');
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -93,12 +106,18 @@ export class UsersService {
   }
 
   async validateUserById(id: number): Promise<UserResponseDto | null> {
-    const user = await this.userRepository.findOne({ id, status: { $ne: 'D' } });
+    const user = await this.userRepository.findOne(
+      { id, status: { $ne: 'D' } },
+      { populate: ['role'] }
+    );
     return user ? mapToFindUserDto(user) : null;
   }
 
   async validateUserByEmail(email: string): Promise<UserResponseDto | null> {
-    const user = await this.userRepository.findOne({ email, status: { $ne: 'D' } });
+    const user = await this.userRepository.findOne(
+      { email, status: { $ne: 'D' } },
+      { populate: ['role'] }
+    );
     return user ? mapToFindUserDto(user) : null;
   }
 

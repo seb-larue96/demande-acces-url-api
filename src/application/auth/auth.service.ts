@@ -21,14 +21,15 @@ export class AuthService {
             id: user.id, 
             name: user.name, 
             surname: user.surname, 
-            email: user.email 
+            email: user.email,
+            role: user.role
         };
 
         const jwtOptions = { 
             audience: this.jwtConfiguration.audience, 
-            issuer: this.jwtConfiguration.issuer, 
-            secret: this.jwtConfiguration.secret, 
-            expiresIn: this.jwtConfiguration.accessTokenTtl 
+            issuer: this.jwtConfiguration.issuer,
+            secret: this.jwtConfiguration.secret,
+            expiresIn: this.jwtConfiguration.accessTokenTtl
         };
 
         const access_token = await this.jwtService.signAsync(payload, jwtOptions);
@@ -43,10 +44,6 @@ export class AuthService {
         const existingMail = await this.usersService.validateUserByEmail(registerDto.email);
         if (existingMail) throw new BadRequestException('Email already in use');
         
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(registerDto.password, salt); 
-
-        const newUser = { ...registerDto, password: hashedPassword };
-        return await this.usersService.create(newUser);
+        return await this.usersService.create(registerDto);
     }
 }
