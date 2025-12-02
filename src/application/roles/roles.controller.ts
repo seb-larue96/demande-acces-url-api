@@ -17,7 +17,7 @@ export class RolesController {
 
   @Get('getRoleById/:id')
   @ApiOperation({ summary: 'Get role by id' })
-  @ApiResponse({ status: 200, description: 'The role status has been successfully retrieved.' })
+  @ApiResponse({ status: 200, description: 'The role has been successfully retrieved.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'Role not found.' })
   async findOne(@Param('id') id: string) {
