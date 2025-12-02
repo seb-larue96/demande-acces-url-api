@@ -20,7 +20,7 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'The role has been successfully retrieved.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'Role not found.' })
-  async findOne(@Param('id') id: string) {
-    return this.rolesService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    return this.rolesService.findOne(id);
   }
 }
