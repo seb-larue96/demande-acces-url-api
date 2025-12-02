@@ -5,5 +5,5 @@ export class RoleResponseDto {
     readonly id: number;
 
     @ApiProperty()
-    readonly name: number;
+    readonly name: string;
 }
