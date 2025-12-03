@@ -9,5 +9,8 @@ export class Role {
     name: string;
 
     @Property()
+    level: number;
+
+    @Property()
     status: string;
 }
