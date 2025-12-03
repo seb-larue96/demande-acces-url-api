@@ -25,6 +25,9 @@ export class AccessRequest {
 
     @ManyToOne(() => AccessRequestStatus)
     requestStatus: AccessRequestStatus;
+
+    @ManyToOne(() => User, { nullable: true })
+    handledBy: User | null;
     
     @Property()
     status: string;
