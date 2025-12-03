@@ -90,10 +90,33 @@ export class AccessRequestService {
 
     accessRequest.requestStatus = approvedStatus;
     accessRequest.handledBy = approver;
+    accessRequest.status = 'M';
 
     await this.em.persistAndFlush(accessRequest);
     return mapToAccessRequestResponseDto(accessRequest);
-  } 
+  }
+
+  async rejectRequest(requestId: number, approver: User, reason?: string) {
+    const accessRequest = await this.accessRequestRepository.findOne(
+      { id: requestId, status: { $ne: 'D' } },
+      { populate: ['requester', 'requestStatus'] }
+    );
+
+    if (!accessRequest) throw new NotFoundException(`Access request ${requestId} not found`);
+
+    if (accessRequest.requester.id === approver.id) throw new ForbiddenException('You cannot reject your own request');
+
+    const rejectedStatus = await this.em.findOne(AccessRequestStatus, { code: 'Rejected' });
+    if (!rejectedStatus) throw new NotFoundException('Rejected status not found');
+
+    accessRequest.requestStatus = rejectedStatus;
+    accessRequest.reasonToReject = reason || 'No reason provided';
+    accessRequest.handledBy = approver;
+    accessRequest.status = 'M';
+
+    await this.em.persistAndFlush(accessRequest);
+    return mapToAccessRequestResponseDto(accessRequest);
+  }
 
   private async generateUniqueRequestNumber(): Promise<string> {
     while (true) {
