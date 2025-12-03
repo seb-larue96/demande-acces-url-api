@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAccessRequestDto } from './dto/create-access-request.dto';
 import { UpdateAccessRequestDto } from './dto/update-access-request.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
@@ -40,26 +40,26 @@ export class AccessRequestService {
     return mapToAccessRequestResponseDto(accessRequest);
   }
 
-  async findAll() {
+  async findAll(): Promise<AccessRequestResponseDto[]> {
     const acccesRequests = await this.accessRequestRepository.find(
       { status: { $ne: 'D' } },
-      { populate: ['requestStatus'] }
+      { populate: ['requester', 'requestStatus'] }
     );
     return acccesRequests.map(accessRequest => mapToAccessRequestResponseDto(accessRequest));
   }
 
-  async findAllByUser(user: User) {
+  async findAllByUser(user: User): Promise<AccessRequestResponseDto[]> {
     const accessRequests = await this.accessRequestRepository.find(
-      { requester: user, status: { $ne: 'D' } },
-      { populate: ['requestStatus'] }
+      { requester: user.id, status: { $ne: 'D' } },
+      { populate: ['requester', 'requestStatus'] }
     );
     return accessRequests.map(accessRequest => mapToAccessRequestResponseDto(accessRequest));
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<AccessRequestResponseDto> {
     const accessRequest = await this.accessRequestRepository.findOne(
       { id, status: { $ne: 'D' } },
-      { populate: ['requestStatus'] }
+      { populate: ['requester', 'requestStatus'] }
     );
 
     if(!accessRequest) throw new NotFoundException(`Access request with id ${id} not found`);
@@ -74,6 +74,26 @@ export class AccessRequestService {
   remove(id: number) {
     return `This action removes a #${id} accessRequest`;
   }
+
+  async approveRequest(requestId: number, approver: User): Promise<AccessRequestResponseDto> {
+    const accessRequest = await this.accessRequestRepository.findOne(
+      { id: requestId, status: { $ne: 'D' } },
+      { populate: ['requester', 'requestStatus'] }
+    );
+
+    if (!accessRequest) throw new NotFoundException(`Access request ${requestId} not found`);
+
+    if (accessRequest.requester.id === approver.id) throw new ForbiddenException('You cannot approve your own request');
+
+    const approvedStatus = await this.em.findOne(AccessRequestStatus, { code: 'Approved' });
+    if (!approvedStatus) throw new NotFoundException('Approved status not found');
+
+    accessRequest.requestStatus = approvedStatus;
+    accessRequest.handledBy = approver;
+
+    await this.em.persistAndFlush(accessRequest);
+    return mapToAccessRequestResponseDto(accessRequest);
+  } 
 
   private async generateUniqueRequestNumber(): Promise<string> {
     while (true) {
