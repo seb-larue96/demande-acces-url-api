@@ -5,11 +5,13 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import mikroOrmConfig from './config/mikro-orm.config';
 import { ApplicationModule } from './application/application.module';
 import { JwtAuthGuard } from './application/auth/guards/jwt.guard';
+import { RolesGuard } from './application/auth/guards/role.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     MikroOrmModule.forRoot(mikroOrmConfig),
+    MikroOrmModule.forFeature(['Role']),
     ApplicationModule
   ],
   controllers: [],
@@ -18,6 +20,10 @@ import { JwtAuthGuard } from './application/auth/guards/jwt.guard';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    }
   ],
 })
 export class AppModule {}
