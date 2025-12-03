@@ -337,6 +337,16 @@
           "length": null,
           "mappedType": "integer"
         },
+        "handled_by_id": {
+          "name": "handled_by_id",
+          "type": "int",
+          "unsigned": true,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": null,
+          "mappedType": "integer"
+        },
         "status": {
           "name": "status",
           "type": "varchar(255)",
@@ -401,6 +411,16 @@
           "unique": false
         },
         {
+          "columnNames": [
+            "handled_by_id"
+          ],
+          "composite": false,
+          "keyName": "access_request_handled_by_id_index",
+          "constraint": false,
+          "primary": false,
+          "unique": false
+        },
+        {
           "keyName": "PRIMARY",
           "columnNames": [
             "id"
@@ -435,6 +455,19 @@
             "id"
           ],
           "referencedTableName": "access_request_status",
+          "updateRule": "cascade"
+        },
+        "access_request_handled_by_id_foreign": {
+          "constraintName": "access_request_handled_by_id_foreign",
+          "columnNames": [
+            "handled_by_id"
+          ],
+          "localTableName": "access_request",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "user",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },
