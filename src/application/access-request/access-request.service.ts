@@ -4,10 +4,11 @@ import { UpdateAccessRequestDto } from './dto/update-access-request.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityManager, EntityRepository } from '@mikro-orm/mysql';
 import { AccessRequest } from './entities/access-request.entity';
-import { mapToAccessRequestResponseDto } from './mapping/access-request.mapper';
+import { mapToAccessRequestPendingResponseDto, mapToAccessRequestResponseDto } from './mapping/access-request.mapper';
 import { User } from '../users/entities/user.entity';
 import { AccessRequestStatus } from '../references/access-request-status/entities/access-request-status.entity';
 import { AccessRequestResponseDto } from './dto/access-request-response.dto';
+import { PendingAccessRequestResponseDto } from './dto/pending-access-request-response.dto';
 
 @Injectable()
 export class AccessRequestService {
@@ -27,7 +28,7 @@ export class AccessRequestService {
 
     const accessRequest = this.em.create(AccessRequest, {
       requestNumber: requestNumber,
-      Url: createAccessRequestDto.url,
+      url: createAccessRequestDto.url,
       requester: user,
       reasonToRequest: createAccessRequestDto.reasonToRequest,
       requestStatus: requestStatus,
@@ -46,6 +47,18 @@ export class AccessRequestService {
       { populate: ['requester', 'requestStatus'] }
     );
     return acccesRequests.map(accessRequest => mapToAccessRequestResponseDto(accessRequest));
+  }
+
+  async findAllPending(): Promise<PendingAccessRequestResponseDto[]> {
+    const pendingStatus = await this.em.findOne(AccessRequestStatus, { code: 'Pending' });
+    if (!pendingStatus) throw new NotFoundException('Pending status not found');
+
+    const pendingAccessRequests = await this.accessRequestRepository.find(
+      { requestStatus: pendingStatus, status: { $ne: 'D' } },
+      { populate: ['requester', 'requestStatus'] }
+    )
+
+    return pendingAccessRequests.map(pendingAccessRequest => mapToAccessRequestPendingResponseDto(pendingAccessRequest));
   }
 
   async findAllByUser(user: User): Promise<AccessRequestResponseDto[]> {

@@ -12,7 +12,7 @@ export class AccessRequest {
     requestNumber: string;
 
     @Property()
-    Url: string;
+    url: string;
 
     @ManyToOne(() => User)
     requester: User;
@@ -37,4 +37,7 @@ export class AccessRequest {
 
     @Property({ onUpdate: () => new Date(), nullable: true })
     updatedAt?: Date = new Date();
+
+    @Property({  nullable: true, default: false })
+    isSync?: boolean;
 }
