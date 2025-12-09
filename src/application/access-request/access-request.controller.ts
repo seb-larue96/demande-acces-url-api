@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Headers, ForbiddenException } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AccessRequestService } from './access-request.service';
 import { CreateAccessRequestDto } from './dto/create-access-request.dto';
 import { UpdateAccessRequestDto } from './dto/update-access-request.dto';
@@ -7,6 +7,7 @@ import { User as UserEntity } from '../users/entities/user.entity';
 import { User } from 'src/decorators/user.decorator';
 import { Roles } from 'src/decorators/role.decorator';
 import { RejectAccessRequestDto } from './dto/reject-access-request.dto';
+import { Public } from 'src/decorators/public.decorator';
 
 @ApiTags('access-request')
 @Controller('access-request')
@@ -32,12 +33,26 @@ export class AccessRequestController {
     return this.accessRequestService.findAll();
   }
 
+  @Public()
+  @Get('getAccessRequestsPending')
+  @ApiOperation({ summary: 'Get all pending access requests' })
+  @ApiResponse({ status: 200, description: 'List of all pending access requests' })
+  findAllPending(@Headers('auth') auth: string) {
+    const expectedHeader = process.env.PA_AUTH_HEADER;
+
+    if (auth !== expectedHeader) {
+      throw new ForbiddenException('Invalid source');
+    }
+
+    return this.accessRequestService.findAllPending();
+  }
+
   @Roles('User')
   @Get('getAccessRequestsByUser')
   @ApiOperation({ summary: 'Get all access requests by requester' })
   @ApiResponse({ status: 200, description: 'List of all access requests for a user' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  findAllByUserId(@User() user: UserEntity,) {
+  findAllByUserId(@User() user: UserEntity) {
     return this.accessRequestService.findAllByUser(user);
   }
 
