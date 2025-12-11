@@ -81,6 +81,7 @@ export class AccessRequestController {
 
   @Roles('Admin')
   @Post('approve/:id')
+  @ApiOperation({ summary: 'Approve an access request' })
   @ApiParam({ name: 'id', type: Number, description: 'The id of the request to be approved' })
   @ApiResponse({ status: 200, description: 'The access request has been approved.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -91,6 +92,7 @@ export class AccessRequestController {
 
   @Roles('Admin')
   @Post('reject/:id')
+  @ApiOperation({ summary: 'Reject an access request' })
   @ApiParam({ name: 'id', type: Number, description: 'The id of the request to be rejected' })
   @ApiResponse({ status: 200, description: 'The access request has been rejected.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
