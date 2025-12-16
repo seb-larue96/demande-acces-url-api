@@ -80,8 +80,15 @@ export class AccessRequestService {
     return mapToAccessRequestResponseDto(accessRequest);
   }
 
-  update(id: number, updateAccessRequestDto: UpdateAccessRequestDto) {
-    return `This action updates a #${id} accessRequest`;
+  async update(id: number, updateAccessRequestDto: UpdateAccessRequestDto): Promise<AccessRequestResponseDto> {
+    const accessRequest = await this.accessRequestRepository.findOne({ id, status: { $ne: 'D' }});
+    if (!accessRequest) throw new NotFoundException(`Access request with id ${id} not found`);
+
+    this.em.assign(accessRequest, updateAccessRequestDto, { mergeObjectProperties: true });
+    accessRequest.status = 'M';
+
+    await this.em.flush();
+    return mapToAccessRequestResponseDto(accessRequest);
   }
 
   remove(id: number) {
